@@ -24,4 +24,5 @@ RUN pip install -r /opt/django/requirements.txt
 COPY uwsgi.ini /etc/uwsgi.ini
 COPY python_runner.sh /opt/django/python_runner.sh
 COPY klee-web-environment.sh /etc/profile.d/klee-web-environment.sh
-ENTRYPOINT ["/opt/django/python_runner.sh", "/usr/local/bin/uwsgi", "/etc/uwsgi.ini"]
+COPY run_uwsgi.sh /usr/local/bin/run_uwsgi.sh
+ENTRYPOINT ["/opt/django/python_runner.sh", "/usr/local/bin/run_uwsgi.sh"]
