@@ -16,4 +16,4 @@ cp /etc/profile.d/klee-web-environment.sh klee-web-environment.sh
 
 cp /src/python_runner.sh python_runner.sh
 
-sudo docker build -t klee:django .
+sudo docker build -t helicopter88/klee_django .
