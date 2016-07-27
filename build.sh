@@ -4,7 +4,7 @@ if [ ! -e /titb ]; then
 fi
 
 # Grab the python source code
-cp -R /titb/src/klee_web klee_web
+cp -R /titb/ src
 
 cp /etc/apt/sources.list.d/pgdg.list pgdg.list
 

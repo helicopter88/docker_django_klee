@@ -1,4 +1,7 @@
 FROM ubuntu:14.04
+ENV DJANGO_PATH=/opt/src/src/klee_web/ \
+    PROJECT_PATH=/opt/src/
+
 RUN apt-get update
 RUN apt-get install -y curl wget
 RUN /bin/bash -c 'curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -'
@@ -31,18 +34,18 @@ RUn gem install sass
 
 # Set up package and requirements
 # TODO: Maybe switch to git clone for production
-COPY src /opt/src
+COPY src ${PROJECT_PATH}
 # Satisfy requirements for JS and compile everything
 RUN cd /opt/src && \
     npm install && \
-    bower install && \
+    bower install --allow-root && \
     grunt
 
 COPY pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
 COPY postgresql.conf /etc/postgresql/9.5/main/postgresql.conf
-RUN pip install -r /opt/src/src/klee_web/requirements.txt
+RUN pip install -r ${DJANGO_PATH}/requirements.txt
 COPY uwsgi.ini /etc/uwsgi.ini
-COPY python_runner.sh /opt/django/python_runner.sh
+COPY python_runner.sh ${PROJECT_PATH}/python_runner.sh
 COPY klee-web-environment.sh /etc/profile.d/klee-web-environment.sh
 COPY run_uwsgi.sh /usr/local/bin/run_uwsgi.sh
-ENTRYPOINT ["/opt/django/python_runner.sh", "/usr/local/bin/run_uwsgi.sh"]
+ENTRYPOINT ["/opt/src/python_runner.sh", "/usr/local/bin/run_uwsgi.sh"]
