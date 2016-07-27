@@ -15,5 +15,3 @@ sudo cp /etc/postgresql/9.5/main/pg_hba.conf pg_hba.conf
 cp /etc/profile.d/klee-web-environment.sh klee-web-environment.sh
 
 cp /src/python_runner.sh python_runner.sh
-
-sudo docker build -t helicopter88/klee_django .
