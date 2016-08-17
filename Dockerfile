@@ -5,11 +5,10 @@ ENV DJANGO_PATH=/opt/src/src/klee_web/ \
 RUN apt-get update
 RUN apt-get install -y curl wget
 RUN /bin/bash -c 'curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -'
-RUN /bin/bash -c 'wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -'
-ADD pgdg.list /etc/apt/sources.list.d/pgdg.list
 
 RUN apt-get update
 RUN apt-get install -y \
+    git \
     software-properties-common \
     nodejs \
     build-essential \
@@ -17,8 +16,6 @@ RUN apt-get install -y \
     libpcre3-dev \
     python-dev \
     python-pip \
-    postgresql-9.5 \
-    postgresql-contrib-9.5 \
     libpq-dev \
     python-psycopg2
 
@@ -33,16 +30,13 @@ RUN update-alternatives --set ruby /usr/bin/ruby2.3
 RUn gem install sass
 
 # Set up package and requirements
-# TODO: Maybe switch to git clone for production
-COPY src ${PROJECT_PATH}
+RUN git clone https://github.com/klee/klee-web.git ${PROJECT_PATH}
 # Satisfy requirements for JS and compile everything
-RUN cd /opt/src && \
+RUN cd ${PROJECT_PATH} && \
     npm install && \
     bower install --allow-root && \
     grunt
 
-COPY pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
-COPY postgresql.conf /etc/postgresql/9.5/main/postgresql.conf
 RUN pip install -r ${DJANGO_PATH}/requirements.txt
 COPY uwsgi.ini /etc/uwsgi.ini
 COPY python_runner.sh ${PROJECT_PATH}/python_runner.sh
